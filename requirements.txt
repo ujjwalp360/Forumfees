@@ -1,5 +1,2 @@
-heremysql-connector-python==8.0.27
-streamlit-option-menu==0.3.6
-streamlit_embedcode==0.1.2
-streamlit-lottie==0.0.5
-requests==2.31.0
+streamlit==1.25.0
+pandas==2.1.1
