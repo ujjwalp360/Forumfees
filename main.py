@@ -19,7 +19,6 @@ def ensure_csv():
         st.write("CSV file was empty and has been recreated.")
 
 # Load data from the CSV file
-@st.cache_data(show_spinner=False)
 def load_data():
     df = pd.read_csv(CSV_FILE)
     st.write("Data loaded from CSV:")
@@ -61,10 +60,9 @@ with st.form("entry_form"):
         append_data(roll_no, name, amount)
         st.success("Data submitted successfully!")
 
-# Load data to show in the list
-df = load_data()
-
+# Load data to show in the list when button is clicked
 if st.button("Show List"):
+    df = load_data()  # Load the data again when the button is pressed
     if not df.empty:
         df_sorted = df.sort_values(by='Roll No')
         st.write(df_sorted)
