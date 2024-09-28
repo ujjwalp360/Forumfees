@@ -2,10 +2,10 @@ import streamlit as st
 import pandas as pd
 import os
 
-# File location
-CSV_FILE = 'https://github.com/ujjwalp360/Forumfees/blob/b70f555f67484d699f6b84044599887244c02be4/Fees.csv'
+# File location (local CSV file in the same directory as main.py)
+CSV_FILE = 'Fees.csv'
 
-# Load the data from CSV file
+# Load the data from the CSV file
 @st.cache_data
 def load_data():
     if os.path.exists(CSV_FILE):
@@ -13,14 +13,18 @@ def load_data():
     else:
         return pd.DataFrame(columns=['Roll No', 'Name', 'Amount'])
 
-# Append new data to the CSV
+# Append new data to the CSV using pd.concat()
 def append_data(roll_no, name, amount):
-    new_data = {'Roll No': roll_no, 'Name': name, 'Amount': amount}
+    new_data = pd.DataFrame({'Roll No': [roll_no], 'Name': [name], 'Amount': [amount]})
     df = load_data()
-    df = df.append(new_data, ignore_index=True)
+    
+    # Use pd.concat to add the new row
+    df = pd.concat([df, new_data], ignore_index=True)
+    
+    # Save updated dataframe to CSV
     df.to_csv(CSV_FILE, index=False)
 
-# Display the form
+# Streamlit app for collecting student data
 st.title("College Fee Collection")
 
 with st.form("entry_form"):
