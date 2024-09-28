@@ -2,14 +2,16 @@ import streamlit as st
 import pandas as pd
 import os
 
-# File location (local CSV file in the same directory as main.py)
-CSV_FILE = 'Fees.csv'
+# Get the current working directory
+CURRENT_DIR = os.getcwd()
+CSV_FILE = os.path.join(CURRENT_DIR, 'Fees.csv')
 
 # Load the data from the CSV file
 @st.cache_data
 def load_data():
     if os.path.exists(CSV_FILE):
-        return pd.read_csv(CSV_FILE)
+        df = pd.read_csv(CSV_FILE)
+        return df
     else:
         return pd.DataFrame(columns=['Roll No', 'Name', 'Amount'])
 
