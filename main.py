@@ -44,21 +44,25 @@ def append_data(roll_no, name, amount):
     st.write("Data After Appending:")
     st.write(df)
 
-# Delete a row from the CSV
-def delete_row(index):
+# Delete a row by roll number from the CSV
+def delete_row_by_roll_no(roll_no):
     df = load_data()  # Load the current data
-    if index < len(df):  # Check if the index is valid
-        df = df.drop(index)  # Drop the selected row
+    
+    # Check if the roll number exists
+    if roll_no in df['Roll No'].values:
+        # Remove the row with the given roll number
+        df = df[df['Roll No'] != roll_no]
         df.to_csv(CSV_FILE, index=False)  # Save the updated DataFrame back to CSV
-        st.success("Row deleted successfully!")
+        st.success(f"Roll No {roll_no} deleted successfully!")
     else:
-        st.error("Invalid index for deletion.")
+        st.error(f"Roll No {roll_no} not found.")
 
 # Streamlit app for collecting student data
 st.title("College Fee Collection")
 
 ensure_csv()  # Ensure the CSV file is ready
 
+# Form to input new student data
 with st.form("entry_form"):
     name = st.text_input("Enter Name")
     roll_no = st.text_input("Enter Roll No")
@@ -69,7 +73,7 @@ with st.form("entry_form"):
     if submit:
         append_data(roll_no, name, amount)
 
-# Load data to show in the list when button is clicked
+# Show the list of data
 if st.button("Show List"):
     df = load_data()  # Load the data again when the button is pressed
     if not df.empty:
@@ -79,10 +83,13 @@ if st.button("Show List"):
         # Calculate and display total amount
         total_amount = df['Amount'].sum()
         st.write(f"**Total Amount Collected:** ₹{total_amount}")
-
-        # Option to delete a row
-        delete_index = st.number_input("Enter the index of the row to delete", min_value=0, max_value=len(df)-1)
-        if st.button("Delete Row"):
-            delete_row(delete_index)
     else:
         st.write("No data available.")
+
+# Option to delete a row by roll number
+with st.form("delete_form"):
+    delete_roll_no = st.text_input("Enter the Roll No to delete")
+    delete_submit = st.form_submit_button("Delete")
+
+    if delete_submit:
+        delete_row_by_roll_no(delete_roll_no)
