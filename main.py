@@ -3,7 +3,7 @@ import pandas as pd
 import os
 
 # File location
-CSV_FILE = 'https://github.com/your-repo/your-csv-file.csv'
+CSV_FILE = 'https://github.com/ujjwalp360/Forumfees/blob/b70f555f67484d699f6b84044599887244c02be4/Fees.csv'
 
 # Load the data from CSV file
 @st.cache_data
