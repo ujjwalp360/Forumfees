@@ -77,7 +77,11 @@ with st.form("entry_form"):
     submit = st.form_submit_button("Submit")
 
     if submit:
-        append_data(roll_no, name, amount)
+        # Check if Roll No is provided
+        if roll_no.strip() == "":
+            st.error("Roll No is mandatory. Please enter a valid Roll No.")
+        else:
+            append_data(roll_no, name, amount)
 
 # Show the list of data
 if st.button("Show List"):
