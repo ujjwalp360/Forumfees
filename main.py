@@ -10,10 +10,13 @@ CSV_FILE = os.path.join(CURRENT_DIR, 'Fees.csv')
 @st.cache_data
 def load_data():
     if os.path.exists(CSV_FILE):
-        df = pd.read_csv(CSV_FILE)
-        return df
+        # Check if the file is empty
+        if os.stat(CSV_FILE).st_size == 0:
+            return pd.DataFrame(columns=['Roll No', 'Name', 'Amount'])  # Initialize empty dataframe if file is empty
+        else:
+            return pd.read_csv(CSV_FILE)
     else:
-        return pd.DataFrame(columns=['Roll No', 'Name', 'Amount'])
+        return pd.DataFrame(columns=['Roll No', 'Name', 'Amount'])  # Return empty dataframe if file doesn't exist
 
 # Append new data to the CSV using pd.concat()
 def append_data(roll_no, name, amount):
