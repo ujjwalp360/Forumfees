@@ -24,7 +24,7 @@ def load_data():
 # Append new data to the CSV
 def append_data(roll_no, name, amount):
     df = load_data()
-    
+
     # Check if the roll number already exists
     if roll_no in df['Roll No'].astype(str).values:
         st.error(f"Roll No {roll_no} already exists. Please use a different roll number.")
@@ -43,8 +43,11 @@ def delete_row_by_roll_no(roll_no):
     df = load_data()  # Load the current data
     roll_no = roll_no.strip()  # Trim any leading/trailing spaces
 
+    # Ensure roll number is treated as a string
+    df['Roll No'] = df['Roll No'].astype(str)
+
     # Check if the roll number exists
-    if roll_no in df['Roll No'].astype(str).values:
+    if roll_no in df['Roll No'].values:
         # Remove the row with the given roll number
         df = df[df['Roll No'] != roll_no]
         df.to_csv(CSV_FILE, index=False)  # Save the updated DataFrame back to CSV
