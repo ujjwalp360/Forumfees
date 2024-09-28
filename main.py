@@ -71,7 +71,7 @@ ensure_csv()  # Ensure the CSV file is ready
 # Form to input new student data
 with st.form("entry_form"):
     name = st.text_input("Enter Name")
-    roll_no = st.text_input("Enter Roll No")
+    roll_no = st.text_input("Enter Roll No (mandatory)", max_chars=10)  # Mandatory field
     amount = st.number_input("Enter Amount", value=250)
 
     submit = st.form_submit_button("Submit")
