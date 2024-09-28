@@ -32,7 +32,7 @@ def append_data(roll_no, name, amount):
         return
 
     # Append new data
-    new_data = pd.DataFrame({'Roll No': [roll_no], 'Name': [name], 'Amount': [amount]})
+    new_data = pd.DataFrame({'Roll No': [str(roll_no)], 'Name': [name], 'Amount': [amount]})
     df = pd.concat([df, new_data], ignore_index=True)
     df.to_csv(CSV_FILE, index=False)
 
