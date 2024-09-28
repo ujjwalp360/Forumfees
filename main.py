@@ -2,59 +2,48 @@ import streamlit as st
 import pandas as pd
 import os
 
-# Get the current working directory
-CURRENT_DIR = os.getcwd()
-CSV_FILE = os.path.join(CURRENT_DIR, 'Fees.csv')
+# Specify the path to your CSV file
+CSV_FILE = 'Fees.csv'  # Ensure this file is in the same directory as your Streamlit app
 
-# Initialize the CSV file if it doesn't exist or is corrupted
+# Function to ensure the CSV file exists and is properly formatted
 def ensure_csv():
-    if not os.path.exists(CSV_FILE) or os.stat(CSV_FILE).st_size == 0:
-        # Create the CSV file with headers if it's missing or empty
+    if not os.path.exists(CSV_FILE):
+        # Create a new CSV file with the correct columns
         df = pd.DataFrame(columns=['Roll No', 'Name', 'Amount'])
         df.to_csv(CSV_FILE, index=False)
-        return df
-    else:
-        return pd.read_csv(CSV_FILE)
+    elif os.stat(CSV_FILE).st_size == 0:
+        # Recreate if the file is empty
+        df = pd.DataFrame(columns=['Roll No', 'Name', 'Amount'])
+        df.to_csv(CSV_FILE, index=False)
 
-# Load the data from the CSV file
+# Load data from the CSV file
 @st.cache_data
 def load_data():
-    try:
-        return pd.read_csv(CSV_FILE)
-    except pd.errors.EmptyDataError:
-        # Handle the case where the file is empty
-        return pd.DataFrame(columns=['Roll No', 'Name', 'Amount'])
+    return pd.read_csv(CSV_FILE)
 
-# Append new data to the CSV using pd.concat()
+# Append new data to the CSV
 def append_data(roll_no, name, amount):
     new_data = pd.DataFrame({'Roll No': [roll_no], 'Name': [name], 'Amount': [amount]})
     df = load_data()
-    
-    # Use pd.concat to add the new row
     df = pd.concat([df, new_data], ignore_index=True)
-    
-    # Save updated dataframe to CSV
     df.to_csv(CSV_FILE, index=False)
 
 # Streamlit app for collecting student data
 st.title("College Fee Collection")
 
-# Ensure CSV file is ready before interacting with the data
-ensure_csv()
+ensure_csv()  # Ensure the CSV file is ready
 
 with st.form("entry_form"):
     name = st.text_input("Enter Name")
     roll_no = st.text_input("Enter Roll No")
     amount = st.number_input("Enter Amount", value=250)
-    
-    # Form submit button
+
     submit = st.form_submit_button("Submit")
 
     if submit:
         append_data(roll_no, name, amount)
         st.success("Data submitted successfully!")
 
-# Option to view the list sorted by roll number
 if st.button("Show List"):
     df = load_data()
     if not df.empty:
