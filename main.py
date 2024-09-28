@@ -89,7 +89,7 @@ if st.button("Show List"):
     if not df.empty:
         df_sorted = df.sort_values(by='Roll No').reset_index(drop=True)  # Reset index for clean display
         df_sorted.index += 1  # Start the index from 1 instead of 0
-        st.write(df_sorted.astype(str))
+        st.write(df_sorted.astype(int))
         
         # Calculate and display total amount
         total_amount = df['Amount'].sum()
