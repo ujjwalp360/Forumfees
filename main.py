@@ -82,3 +82,23 @@ if st.button("Show List"):
         st.write(f"**No. of students left:** {(13000 - total_amount) // 250}")
     else:
         st.write("No data available.")
+def delete_row_by_roll_no(roll_no):
+    df = load_data()
+
+    # Ensure roll number is treated as a string
+    df['Roll No'] = df['Roll No'].astype(str)
+
+    # Check if the roll number exists
+    if roll_no in df['Roll No'].values:
+        df = df[df['Roll No'] != roll_no]
+        df.to_csv(CSV_FILE, index=False)  # Save the updated DataFrame back to CSV
+        st.success(f"Roll No {roll_no} deleted successfully!")
+    else:
+        st.error(f"Roll No {roll_no} not found.")
+
+with st.form("delete_form"):
+    delete_roll_no = st.text_input("Enter the Roll No to delete")
+    delete_submit = st.form_submit_button("Delete")
+
+    if delete_submit:
+        delete_row_by_roll_no(delete_roll_no)
