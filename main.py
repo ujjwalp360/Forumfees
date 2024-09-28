@@ -17,7 +17,7 @@ def ensure_csv():
         df.to_csv(CSV_FILE, index=False)
 
 # Load data from the CSV file
-@st.cache_data
+@st.cache_data(show_spinner=False)
 def load_data():
     return pd.read_csv(CSV_FILE)
 
@@ -44,8 +44,10 @@ with st.form("entry_form"):
         append_data(roll_no, name, amount)
         st.success("Data submitted successfully!")
 
+# Reload data after form submission to show updated list
+df = load_data()
+
 if st.button("Show List"):
-    df = load_data()
     if not df.empty:
         df_sorted = df.sort_values(by='Roll No')
         st.write(df_sorted)
