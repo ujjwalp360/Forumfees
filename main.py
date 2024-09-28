@@ -18,7 +18,7 @@ def ensure_csv():
 
 # Load data from the CSV file
 def load_data():
-    df = pd.read_csv(CSV_FILE)
+    df = pd.read_csv(CSV_FILE, dtype={'Roll No': str})  # Treat 'Roll No' as string
     return df
 
 # Append new data to the CSV
