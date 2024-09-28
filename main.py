@@ -8,12 +8,10 @@ CSV_FILE = 'Fees.csv'  # Ensure this file is in the same directory as your Strea
 # Function to ensure the CSV file exists and is properly formatted
 def ensure_csv():
     if not os.path.exists(CSV_FILE):
-        # Create a new CSV file with the correct columns
         df = pd.DataFrame(columns=['Roll No', 'Name', 'Amount'])
         df.to_csv(CSV_FILE, index=False)
         st.write("Created a new CSV file.")
     elif os.stat(CSV_FILE).st_size == 0:
-        # Recreate if the file is empty
         df = pd.DataFrame(columns=['Roll No', 'Name', 'Amount'])
         df.to_csv(CSV_FILE, index=False)
         st.write("CSV file was empty and has been recreated.")
@@ -21,8 +19,6 @@ def ensure_csv():
 # Load data from the CSV file
 def load_data():
     df = pd.read_csv(CSV_FILE)
-    st.write("Data loaded from CSV:")
-    st.write(df)  # Print loaded data for debugging
     return df
 
 # Append new data to the CSV
@@ -30,7 +26,7 @@ def append_data(roll_no, name, amount):
     df = load_data()
     
     # Check if the roll number already exists
-    if roll_no in df['Roll No'].values:
+    if roll_no in df['Roll No'].astype(str).values:
         st.error(f"Roll No {roll_no} already exists. Please use a different roll number.")
         return
 
@@ -41,15 +37,14 @@ def append_data(roll_no, name, amount):
     df.to_csv(CSV_FILE, index=False)
 
     st.success("Data submitted successfully!")
-    st.write("Data After Appending:")
-    st.write(df)
 
 # Delete a row by roll number from the CSV
 def delete_row_by_roll_no(roll_no):
     df = load_data()  # Load the current data
-    
+    roll_no = roll_no.strip()  # Trim any leading/trailing spaces
+
     # Check if the roll number exists
-    if roll_no in df['Roll No'].values:
+    if roll_no in df['Roll No'].astype(str).values:
         # Remove the row with the given roll number
         df = df[df['Roll No'] != roll_no]
         df.to_csv(CSV_FILE, index=False)  # Save the updated DataFrame back to CSV
