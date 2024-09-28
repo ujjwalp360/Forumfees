@@ -91,7 +91,7 @@ if st.button("Show List"):
         total_amount = df['Amount'].sum()
         st.write(f"**Amount Collected:** ₹{total_amount}")
         st.write(f"**Total Amount to collect:** ₹{13000}")
-        st.write(f"**No. of student left:**{(1300-total_amount)//250})
+        st.write(f"**No. of student left:**{(1300-total_amount)//250}")
     else:
         st.write("No data available.")
 
