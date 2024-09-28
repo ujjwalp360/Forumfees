@@ -6,17 +6,24 @@ import os
 CURRENT_DIR = os.getcwd()
 CSV_FILE = os.path.join(CURRENT_DIR, 'Fees.csv')
 
+# Initialize the CSV file if it doesn't exist or is corrupted
+def ensure_csv():
+    if not os.path.exists(CSV_FILE) or os.stat(CSV_FILE).st_size == 0:
+        # Create the CSV file with headers if it's missing or empty
+        df = pd.DataFrame(columns=['Roll No', 'Name', 'Amount'])
+        df.to_csv(CSV_FILE, index=False)
+        return df
+    else:
+        return pd.read_csv(CSV_FILE)
+
 # Load the data from the CSV file
 @st.cache_data
 def load_data():
-    if os.path.exists(CSV_FILE):
-        # Check if the file is empty
-        if os.stat(CSV_FILE).st_size == 0:
-            return pd.DataFrame(columns=['Roll No', 'Name', 'Amount'])  # Initialize empty dataframe if file is empty
-        else:
-            return pd.read_csv(CSV_FILE)
-    else:
-        return pd.DataFrame(columns=['Roll No', 'Name', 'Amount'])  # Return empty dataframe if file doesn't exist
+    try:
+        return pd.read_csv(CSV_FILE)
+    except pd.errors.EmptyDataError:
+        # Handle the case where the file is empty
+        return pd.DataFrame(columns=['Roll No', 'Name', 'Amount'])
 
 # Append new data to the CSV using pd.concat()
 def append_data(roll_no, name, amount):
@@ -31,6 +38,9 @@ def append_data(roll_no, name, amount):
 
 # Streamlit app for collecting student data
 st.title("College Fee Collection")
+
+# Ensure CSV file is ready before interacting with the data
+ensure_csv()
 
 with st.form("entry_form"):
     name = st.text_input("Enter Name")
