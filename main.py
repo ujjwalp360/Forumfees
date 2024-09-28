@@ -18,8 +18,9 @@ def ensure_csv():
 
 # Load data from the CSV file
 def load_data():
-    df = pd.read_csv(CSV_FILE, dtype={'Roll No': str})  # Treat 'Roll No' as string
-    return df
+    if os.stat(CSV_FILE).st_size == 0:
+        return pd.DataFrame(columns=['Roll No', 'Name', 'Amount'])
+    return pd.read_csv(CSV_FILE, dtype={'Roll No': str})  # Ensure 'Roll No' is treated as string
 
 # Append new data to the CSV
 def append_data(roll_no, name, amount):
@@ -30,9 +31,8 @@ def append_data(roll_no, name, amount):
         st.error(f"Roll No {roll_no} already exists. Please use a different roll number.")
         return
 
+    # Append new data
     new_data = pd.DataFrame({'Roll No': [roll_no], 'Name': [name], 'Amount': [amount]})
-    
-    # Append new data and save
     df = pd.concat([df, new_data], ignore_index=True)
     df.to_csv(CSV_FILE, index=False)
 
@@ -40,7 +40,7 @@ def append_data(roll_no, name, amount):
 
 # Delete a row by roll number from the CSV
 def delete_row_by_roll_no(roll_no):
-    df = load_data()  # Load the current data
+    df = load_data()
     roll_no = roll_no.strip()  # Trim any leading/trailing spaces
 
     # Ensure roll number is treated as a string
@@ -48,13 +48,13 @@ def delete_row_by_roll_no(roll_no):
 
     # Check if the roll number exists
     if roll_no in df['Roll No'].values:
-        # Remove the row with the given roll number
-        df = df[df['Roll No'] != roll_no]
+        df = df[df['Roll No'] != roll_no]  # Remove the row with the given roll number
         df.to_csv(CSV_FILE, index=False)  # Save the updated DataFrame back to CSV
         st.success(f"Roll No {roll_no} deleted successfully!")
-        
+
         # Display the updated list automatically after deletion
         st.write("Updated List After Deletion:")
+        df.index += 1  # Start index from 1
         st.write(df)
         
         # Show the total amount after deletion
@@ -64,14 +64,14 @@ def delete_row_by_roll_no(roll_no):
         st.error(f"Roll No {roll_no} not found.")
 
 # Streamlit app for collecting student data
-st.title("Forum Fees collection")
+st.title("Forum Fees Collection")
 
 ensure_csv()  # Ensure the CSV file is ready
 
 # Form to input new student data
 with st.form("entry_form"):
     name = st.text_input("Enter Name")
-    roll_no = st.text_input("Enter Roll No (mandatory)",max_chars=4)  # Mandatory field
+    roll_no = st.text_input("Enter Roll No (mandatory)", max_chars=4)  # Mandatory field
     amount = st.number_input("Enter Amount", value=250)
 
     submit = st.form_submit_button("Submit")
@@ -85,10 +85,10 @@ with st.form("entry_form"):
 
 # Show the list of data
 if st.button("Show List"):
-    df = load_data()  # Load the data again when the button is pressed
+    df = load_data()
     if not df.empty:
         df_sorted = df.sort_values(by='Roll No').reset_index(drop=True)  # Reset index for clean display
-        df_sorted.index += 1 #to show index 1
+        df_sorted.index += 1  # Start the index from 1 instead of 0
         st.write(df_sorted.astype(str))
         
         # Calculate and display total amount
