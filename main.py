@@ -90,6 +90,7 @@ if st.button("Show List"):
         # Calculate and display total amount
         total_amount = df['Amount'].sum()
         st.write(f"**Amount Collected:** ₹{total_amount}")
+        st.write(f"**Amount left:** {(13000-total_amount)}")
         st.write(f"**Total Amount to collect:** ₹{13000}")
         st.write(f"**No. of student left:** {(13000-total_amount)//250}")
     else:
