@@ -49,6 +49,14 @@ def delete_row_by_roll_no(roll_no):
         df = df[df['Roll No'] != roll_no]
         df.to_csv(CSV_FILE, index=False)  # Save the updated DataFrame back to CSV
         st.success(f"Roll No {roll_no} deleted successfully!")
+        
+        # Display the updated list automatically after deletion
+        st.write("Updated List After Deletion:")
+        st.write(df)
+        
+        # Show the total amount after deletion
+        total_amount = df['Amount'].sum()
+        st.write(f"**Total Amount Collected After Deletion:** ₹{total_amount}")
     else:
         st.error(f"Roll No {roll_no} not found.")
 
