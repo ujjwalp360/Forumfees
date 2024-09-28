@@ -64,7 +64,7 @@ def delete_row_by_roll_no(roll_no):
         st.error(f"Roll No {roll_no} not found.")
 
 # Streamlit app for collecting student data
-st.title("College Fee Collection")
+st.title("Forum Fees collection")
 
 ensure_csv()  # Ensure the CSV file is ready
 
@@ -89,7 +89,8 @@ if st.button("Show List"):
         
         # Calculate and display total amount
         total_amount = df['Amount'].sum()
-        st.write(f"**Total Amount Collected:** ₹{total_amount}")
+        st.write(f"**Amount Collected:** ₹{total_amount}")
+        st.write(f"**Total Amount to collect:** ₹{13000}")
     else:
         st.write("No data available.")
 
